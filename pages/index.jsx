@@ -1,6 +1,7 @@
 import axios from "axios";
 import Head from "next/head";
 import Home from "./home";
+import { categoryList, productList } from "../util/data";
 
 export default function Index({ categoryList, productList }) {
   return (
@@ -21,14 +22,10 @@ export default function Index({ categoryList, productList }) {
 }
 
 export const getServerSideProps = async () => {
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
-  const product = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/products`
-  );
   return {
     props: {
-      categoryList: res.data ? res.data : [],
-      productList: product.data ? product.data : [],
+      categoryList: categoryList,
+      productList: productList,
     },
   };
 };

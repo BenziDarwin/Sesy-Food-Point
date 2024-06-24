@@ -18,9 +18,9 @@ const Footer = () => {
                 <i className="fa fa-phone"></i>
                 <a
                   className="inline-block ml-2"
-                  href={`tel:+256774791185`}
+                  href={`tel:+256707879767`}
                 >
-                  +256 774 791 185
+                  +256 707 879 767
                 </a>
               </div>
             </div>

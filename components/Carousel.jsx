@@ -40,7 +40,7 @@ const Carousel = () => {
         <div className="mt-48 text-white flex flex-col items-start gap-y-10">
   <Title addClass="text-6xl">African Delicacies</Title>
   <p className="text-sm sm:w-2/5 w-full">
-    Whether you're a seasoned foodie or new to African cuisine, there's 
+    Whether you&apos;re a seasoned foodie or new to African cuisine, there&apos;s 
      something for everyone to enjoy. Come and taste a bit of our culture today!
   </p>
 </div>

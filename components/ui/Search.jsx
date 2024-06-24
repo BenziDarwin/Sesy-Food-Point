@@ -7,31 +7,14 @@ import axios from "axios";
 import Input from "../form/Input";
 import { useRouter } from "next/router";
 import PacmanLoader from "react-spinners/PacmanLoader";
+import { productList } from "../../util/data";
 
 const Search = ({ setIsSearchModal }) => {
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState(productList);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState([]);
 
   const router = useRouter();
-
-  const getProducts = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/products`
-      );
-      setProduct(res.data);
-      setFiltered(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      getProducts();
-    }, 1000);
-  }, []);
 
   const handleSearch = async (e) => {
     setSearch(e.target.value);
@@ -74,7 +57,6 @@ const Search = ({ setIsSearchModal }) => {
                         />
                       </div>
                       <span className="font-bold">{item.title}</span>
-                      <span className="font-bold">${item.prices[0]}</span>
                     </li>
                   ))
                 ) : (

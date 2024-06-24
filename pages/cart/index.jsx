@@ -37,7 +37,6 @@ const Cart = ({ userList }) => {
       return {
         title: product.title,
         foodQuantity: product.foodQuantity,
-        extras: product.extras,
       };
     });
     setProductState(productTitles);
@@ -93,13 +92,7 @@ const Cart = ({ userList }) => {
                       PRODUCT
                     </th>
                     <th scope="col" className="py-3 px-6">
-                      EXTRAS
-                    </th>
-                    <th scope="col" className="py-3 px-2">
-                      PRICE
-                    </th>
-                    <th scope="col" className="py-3 px-6">
-                      QUANTITY
+                      DAY
                     </th>
                   </tr>
                 </thead>
@@ -113,32 +106,7 @@ const Cart = ({ userList }) => {
                         <span className="text-purple-600">{product.title}</span>
                       </td>
                       <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                        {product.extras.length > 0
-                          ? product.extras.map((item) => (
-                              <span key={item._id}>
-                                {item.text}
-                                <br />
-                              </span>
-                            ))
-                          : "No Extras"}
-                      </td>
-                      <td className="py-4 px-2 font-medium whitespace-nowrap hover:text-white">
-                        ${product.price}
-                      </td>
-                      <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                        <button>
-                          <i
-                            className="fa-solid fa-chevron-left mr-3 text-primary"
-                            onClick={() => quantityChange(0, product)}
-                          ></i>
-                        </button>
-                        {product.foodQuantity}
-                        <button>
-                          <i
-                            className="fa-solid fa-chevron-right ml-3 text-primary"
-                            onClick={() => quantityChange(1, product)}
-                          ></i>
-                        </button>
+                        {/* TODO; DATE PICKER*/}
                       </td>
                     </tr>
                   ))}
@@ -161,9 +129,7 @@ const Cart = ({ userList }) => {
           <Title addClass="text-[40px]">CART TOTAL</Title>
 
           <div className="mt-6">
-            <b>Subtotal: </b>${cart.total} <br />
-            <b className=" inline-block my-1">Discount: </b>$0.00 <br />
-            <b>Total: </b>${cart.total}
+            <b>All Items selected; </b> <br />
           </div>
 
           <div>
@@ -171,7 +137,7 @@ const Cart = ({ userList }) => {
               className="btn-primary mt-4 md:w-auto w-52"
               onClick={createOrder}
             >
-              CHECKOUT NOW!
+             Confirm Order
             </button>
           </div>
         </div>
@@ -180,18 +146,7 @@ const Cart = ({ userList }) => {
   );
 };
 
-export const getServerSideProps = async () => {
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`);
-
-  return {
-    props: {
-      userList: res.data ? res.data : [],
-    },
-  };
-};
 
 export default Cart;
 
-{
-  /* */
-}
+
