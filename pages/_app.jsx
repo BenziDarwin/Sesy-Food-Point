@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import { Router, useRouter } from "next/router";
 
 import nProgress from "nprogress";
+import Head from "next/head";
 
 Router.events.on("routeChangeStart", () => nProgress.start());
 Router.events.on("routeChangeComplete", () => nProgress.done());
@@ -23,6 +24,16 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();
   return (
       <Provider store={store}>
+        <Head>
+        <title>Sesy Food Point</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link rel='icon' href='/favicon.ico' />
+        </Head>
         {router.pathname.startsWith("/admin") ? (
           <div className="bg-[#ececec] h-screen">
             <ToastContainer />

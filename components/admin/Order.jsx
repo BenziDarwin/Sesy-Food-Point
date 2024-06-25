@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Title from "../ui/Title";
 import FireStore from "../../firebase/firestore";
+import Title from "../ui/Title";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
@@ -87,7 +87,7 @@ const Order = () => {
         </select>
       </div>
       <div className="overflow-x-auto w-full mt-5">
-        <table className="w-full text-sm text-center text-gray-500">
+        <table className="md:w-[60vw] w-full text-sm text-center text-gray-500">
           <thead className="text-xs text-gray-400 uppercase bg-gray-700">
             <tr>
               <th scope="col" className="py-3 px-6">

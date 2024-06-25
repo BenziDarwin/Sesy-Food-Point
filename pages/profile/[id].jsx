@@ -42,6 +42,7 @@ const Profile = () => {
       <div className="flex px-10 min-h-[calc(100vh_-_433px)] lg:flex-row flex-col lg:mb-0 mb-10">
         <div className="lg:w-80 w-100 flex-shrink-0 lg:h-[80vh]   justify-center flex flex-col border-l-2 border-r-4 shadow-2xl">
           <div className="relative flex flex-col items-center px-10 py-5 border border-b-0 ">
+            <b className="my-3">ID: {user.user.uid.substring(0,5)}</b>
             <Image
               src={user.image ? user.image : ""}
               alt=""
@@ -49,7 +50,7 @@ const Profile = () => {
               height={100}
               className="rounded-full"
             />
-            <b className="text-2xl mt-1">{user.fullName}</b>
+            <b className="text-2xl mt-1 ">{user.fullName}</b>
           </div>
           <ul className="text-center font-semibold">
             <li
