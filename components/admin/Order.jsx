@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
-  const status = ["preparing", "delivering", "delivered"];
   const [hasExtra, setHasExtra] = useState(false);
 
   useEffect(() => {
@@ -74,29 +73,15 @@ const Order = () => {
           <thead className="text-xs text-gray-400 uppercase bg-gray-700">
             <tr>
               <th scope="col" className="py-3 px-6">
-                PRODUCT ID
+                Customer
               </th>
               <th scope="col" className="py-3 px-6">
-                CUSTOMER
+                Product
               </th>
               <th scope="col" className="py-3 px-6">
-                Products
+                Date
               </th>
-              <th scope="col" className="py-3">
-                EXTRAS
-              </th>
-              <th scope="col" className="py-3 px-6">
-                TOTAL
-              </th>
-              <th scope="col" className="py-3 px-6">
-                PAYMENT
-              </th>
-              <th scope="col" className="py-3 px-6">
-                STATUS
-              </th>
-              <th scope="col" className="py-3 px-6">
-                ACTION
-              </th>
+             
             </tr>
           </thead>
           <tbody>
@@ -111,9 +96,6 @@ const Order = () => {
                     <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white gap-x-1 ">
                       {order?._id.substring(0, 7)}
                     </td>
-                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                      {order?.customer}
-                    </td>
                     <td className="py-4 px-6 font-medium  hover:text-white flex-wrap w-[100px] whitespace-nowrap">
                       {order?.products.map((product, index) => (
                         <span key={index}>
@@ -121,51 +103,15 @@ const Order = () => {
                         </span>
                       ))}
                     </td>
-                    <td className="py-4 font-medium hover:text-white">
-                      {order?.products.map((item) => {
-                        return (
-                          <div key={item._id}>
-                            {item.extras &&
-                              item.extras.length > 0 &&
-                              item.extras.map((extra) => (
-                                <span key={extra._id}>{extra.text}, </span>
-                              ))}
-                          </div>
-                        );
-                      })}
-                    </td>
-                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                      ${order?.total}
-                    </td>
+                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white gap-x-1 ">
 
-                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                      {order?.method === 0 ? "Cash" : "Card"}
                     </td>
-                    <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                      {status[order?.status]}
-                    </td>
-                    <td className="py-4 px-1 font-small whitespace-nowrap hover:text-white flex gap-3">
-                      <button
-                        className="btn-primary !bg-green-700 w-24 !pl-0 !pr-0"
-                        onClick={() => handleStatusPrior(order?._id)}
-                        disabled={order?.status < 1}
-                      >
-                        Prior Stage
-                      </button>
-                      <button
-                        className="btn-primary !bg-yellow-600 w-28 !pl-0 !pr-0"
-                        onClick={() => handleDelete(order?._id)}
-                      >
-                        Delete Order
-                      </button>
-                      <button
-                        className="btn-primary !bg-green-700 w-24 !pl-0 !pr-0"
-                        onClick={() => handleStatusNext(order?._id)}
-                        disabled={order?.status > 1}
-                      >
-                        Next Stage
-                      </button>
-                    </td>
+                 
+                  
+
+                   
+                    
+                  
                   </tr>
                 ))}
           </tbody>

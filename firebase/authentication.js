@@ -15,7 +15,7 @@ class Authentication {
     async register({email,password, fullName}) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await new FireStore("users").createUser({email, fullName});
+        await new FireStore("users").createUser({email, fullName, role:"user"});
         return userCredential.user;
       } catch (error) {
         alert("An error occured!");
@@ -30,7 +30,8 @@ class Authentication {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         let response = await new FireStore("users").getDocument(email);
         sessionStorage.setItem("user", JSON.stringify(response));
-        return userCredential.user;
+        console.log({user:userCredential.user, fullName:response.names, role:response.role})
+        return {user:userCredential.user, fullName:response.names};
       } catch (error) {
         console.error("Error signing in:", error);
         return null;
@@ -41,6 +42,7 @@ class Authentication {
     async signOut() {
       try {
         await signOut(auth);
+        sessionStorage.removeItem("user")
       } catch (error) {
         console.error("Error signing out:", error);
       }

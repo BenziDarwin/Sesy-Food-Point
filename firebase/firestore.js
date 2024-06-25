@@ -12,12 +12,14 @@ import {
 } from "firebase/firestore";
 
 class FireStore {
-  constructor(collectionName) {}
+  constructor(collectionName) {
+    this.collectionName = collectionName;
+  }
 
-  async createUser({email, fullName}) {
+  async createUser({email, fullName, role}) {
     try {
       const userRef = doc(fireStore, 'users', email);
-      await setDoc(userRef, { names:fullName }, { merge: true });
+      await setDoc(userRef, { fullName, role }, { merge: true });
     } catch (error) {
       console.error("Error assigning role:", error);
     }

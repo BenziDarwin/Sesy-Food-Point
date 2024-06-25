@@ -21,11 +21,13 @@ const Login = () => {
     const { email, password } = values;
     try {
       const res = await new Authentication().signIn(email, password);
-      actions.resetForm();
-      toast.success("Login successfully", {
-        position: "bottom-left",
-        theme: "colored",
-      });
+      if(res) {
+        actions.resetForm();
+        toast.success("Login successfully", {
+          position: "bottom-left",
+          theme: "colored",
+        });
+      }
     } catch (err) {
       console.log(err);
     }
@@ -35,11 +37,18 @@ const Login = () => {
     onAuthStateChanged(auth, async () => {
         setCurrentUser(auth.currentUser)
         if(auth.currentUser){
-          let data = await new FireStore("users").getDocument(auth.currentUser.email);
-          push("/profile/" + data.fullName);
+          let email = auth.currentUser.email;
+          let data = await new FireStore("users").getDocument(email);
+          sessionStorage.setItem("user", JSON.stringify({user:auth.currentUser, fullName:data.fullName, role:data.role}));
+          if(data.role === "admin") {
+            push("/admin")
+          } else {
+            push("/profile/" + data.fullName);
+          }
+         
         }
     });
-},[currentUser])
+},[currentUser, push])
 
   const { values, errors, touched, handleSubmit, handleChange, handleBlur } =
     useFormik({

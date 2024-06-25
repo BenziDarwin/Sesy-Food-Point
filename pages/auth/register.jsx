@@ -14,9 +14,9 @@ const Register = () => {
   const onSubmit = async (values, actions) => {
     try {
       const res = await new Authentication().register(values);
-      if (res.status === 200) {
+      if (res) {
         toast.success("User created successfully");
-        push("/auth/login");
+        push("/");
       }
     } catch (err) {
       toast.error(err.response.data.message);
