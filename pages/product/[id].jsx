@@ -1,9 +1,8 @@
 import Image from "next/image";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Title from "../../components/ui/Title";
 import { addProduct } from "../../redux/cartSlice";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { productList } from "../../util/data";
 
 const Index = ({ food }) => {

@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import FireStore from "../../firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 
 const Cart = ({ userList }) => {
   const cart = useSelector((state) => state.cart);
@@ -39,7 +40,7 @@ const Cart = ({ userList }) => {
   const validateDays = () => {
     const selectedDays = productState.map((product) => product.selectedDay);
     const uniqueDays = new Set(selectedDays);
-    return uniqueDays.size === 5 && selectedDays.every((day) => daysOfWeek.includes(day));
+    return uniqueDays.size === selectedDays.length && selectedDays.every((day) => daysOfWeek.includes(day));
   };
 
   const isWeekday = () => {
@@ -48,37 +49,77 @@ const Cart = ({ userList }) => {
     return day !== 0 && day !== 6; // Check if today is not Saturday (6) or Sunday (0)
   };
 
+ 
+  const getCurrentWeekOrders = async (uid) => {
+    try {
+      const curr = new Date(); // get current date
+      const first = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week + 1 (Monday)
+      const last = first + 4; // Last day is the first day + 4 (Friday)
+
+      const firstday = new Date(curr.setDate(first));
+      firstday.setHours(0, 0, 0, 0); // Set time to the start of the day
+
+      const lastday = new Date(curr.setDate(last));
+      lastday.setHours(23, 59, 59, 999); // Set time to the end of the day
+
+      const orders = await new FireStore("orders").conditionalGet([
+        { field: "customer", operator: "==", value: uid },
+      ]);
+
+      const currentOrders = orders.filter(order => {
+        const orderDate = new Date(order.timestamp.toDate());
+        return orderDate >= firstday && orderDate <= lastday;
+      });
+
+      return currentOrders;
+    } catch (error) {
+      console.error("Error fetching current week orders:", error);
+      return [];
+    }
+  };
+
   const createOrder = async () => {
     try {
-      if (!isWeekday()) {
-        toast.error("Orders can only be placed on weekdays.");
-        return;
-      }
+      // if (!isWeekday()) {
+      //   toast.error("Orders can only be placed on weekdays.");
+      //   return;
+      // }
 
       if (!validateDays()) {
-        toast.error("Please select a unique day for each product from Monday to Friday.");
+        toast.error("Please select a unique day for each product.");
         return;
       }
 
-      if (sessionStorage.getItem("user")) {
-        if (confirm("Are you sure you want to create this order?")) {
-          const orders = productState.map((item) => ({
-            ...item,
-            customer: JSON.parse(sessionStorage.getItem("user")).user.uid.substring(0, 5),
-          }));
-          await new FireStore("orders").addDocuments(orders).then(() => {
-            router.push(`/menu`);
-            dispatch(reset());
-            toast.success("Order created successfully");
-          });
-        }
-      } else {
+      const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : null;
+      if (!user) {
         router.push("/auth/login");
         throw new Error("You must be logged in to create an order");
       }
+
+      const uid = user.user.uid.substring(0, 5);
+      const currentWeekOrders = await getCurrentWeekOrders(uid);
+      if (currentWeekOrders.length > 0) {
+        if (!confirm("You already have orders for this week. Creating new orders will override the old ones. Do you want to proceed?")) {
+          return;
+        }
+
+        const orderIds = currentWeekOrders.map(order => order.id);
+        await new FireStore("orders").deleteDocuments(orderIds);
+      }
+
+      const orders = productState.map((item) => ({
+        ...item,
+        customer: uid,
+        timestamp: new Date(), // Add current timestamp
+      }));
+
+      await new FireStore("orders").addDocuments(orders);
+      router.push(`/menu`);
+      dispatch(reset());
+      toast.success("Order created successfully");
     } catch (error) {
       toast.error(error.message);
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -97,6 +138,7 @@ const Cart = ({ userList }) => {
     newProductState.splice(index, 1);
     setProductState(newProductState);
   };
+
   return (
     <div className="min-h-[calc(100vh_-_433px)]">
       <div className="flex justify-between items-center md:flex-row flex-col">
@@ -168,7 +210,7 @@ const Cart = ({ userList }) => {
             </div>
           )}
         </div>
-        <div className="bg-secondary min-h-[calc(100vh_-_433px)] md:h-screen flex flex-col justify-center text-white p-12 lg:w-auto md:w-[250px] w-full   md:text-start !text-center">
+        <div className="bg-secondary min-h-[calc(100vh_-_433px)] md:h-screen flex flex-col justify-center text-white p-12 lg:w-auto md:w-[250px] w-full md:text-start !text-center">
           <Title addClass="text-[40px]">CART TOTAL</Title>
           <div>
             <button

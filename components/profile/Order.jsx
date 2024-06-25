@@ -8,10 +8,42 @@ const Order = () => {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState();
 
+
+  const getCurrentWeekOrders = async (uid) => {
+    try {
+      const curr = new Date(); // get current date
+      const first = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week + 1 (Monday)
+      const last = first + 4; // Last day is the first day + 4 (Friday)
+
+      const firstday = new Date(curr.setDate(first));
+      firstday.setHours(0, 0, 0, 0); // Set time to the start of the day
+
+      const lastday = new Date(curr.setDate(last));
+      lastday.setHours(23, 59, 59, 999); // Set time to the end of the day
+
+      const orders = await new FireStore("orders").conditionalGet([
+        { field: "customer", operator: "==", value: uid },
+      ]);
+
+      const currentOrders = orders.filter(order => {
+        const orderDate = new Date(order.timestamp.toDate());
+        return orderDate >= firstday && orderDate <= lastday;
+      });
+
+      return currentOrders;
+    } catch (error) {
+      console.error("Error fetching current week orders:", error);
+      return [];
+    }
+  };
+
   const fetchOrders = async (uid) => {
     try {
-      const odrs = await new FireStore("orders").conditionalGet([{ field: "customer", operator: "==", value: uid }]);
-      setOrders(odrs);
+      const odrs = await getCurrentWeekOrders(uid);
+      if(odrs || odrs.length > 0) {
+        setOrders(odrs);
+      }
+    
     } catch (error) {
       console.error("Error fetching orders:", error);
     }

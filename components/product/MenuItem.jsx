@@ -40,7 +40,6 @@ const MenuItem = ({ product }) => {
         <div className="flex justify-between items-center mt-4">
           <button
             className="btn-primary !w-10 !h-10 !rounded-full !p-0 grid place-content-center absolute bottom-4 right-5"
-            disabled={findCart}
             onClick={addToCart}
           >
             <RiShoppingCart2Fill />
