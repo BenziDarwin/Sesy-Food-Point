@@ -16,6 +16,8 @@ const Profile = () => {
       if (confirm("Are you sure you want to close your Admin Account?")) {
         await new Authentication().signOut();
         toast.success("Admin Account Closed!");
+        await new Promise((res) => setTimeout(res, 1000))
+        push("/auth/login")
         
         }
     } catch (err) {

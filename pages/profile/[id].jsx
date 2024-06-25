@@ -1,16 +1,17 @@
-import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Account from "../../components/profile/Account";
 import Order from "../../components/profile/Order";
 import Password from "../../components/profile/Password";
-import { toast } from "react-toastify";
 import Authentication from "../../firebase/authentication";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+
+  
 
   useEffect(() => {
     let currentUser = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")): null;
@@ -19,7 +20,7 @@ const Profile = () => {
     } else {
       push("/auth/login");
     }
-  },[ user])
+  },[])
 
   const [tabs, setTabs] = useState(0);
   const { push } = useRouter();

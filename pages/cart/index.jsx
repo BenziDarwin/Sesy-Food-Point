@@ -4,58 +4,73 @@ import {
   quantityDecrease,
   quantityIncrease,
   reset,
+  removeProduct,
 } from "../../redux/cartSlice";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import FireStore from "../../firebase/firestore";
 
 const Cart = ({ userList }) => {
-  const { data: session } = useSession();
-
   const cart = useSelector((state) => state.cart);
-
   const router = useRouter();
-
   const dispatch = useDispatch();
-
-  const user = userList?.find((user) => user.email === session?.user?.email);
-
   const [productState, setProductState] = useState([]);
 
-  const newOrder = {
-    customer: user?.fullName,
-    address: user?.address ? user?.address : "No address",
-    total: cart.total,
-    products: productState,
-    method: 0,
-  };
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   useEffect(() => {
-    const productTitles = cart.products.map((product) => {
-      return {
-        title: product.title,
-        foodQuantity: product.foodQuantity,
-      };
-    });
+    const productTitles = cart.products.map((product) => ({
+      title: product.title,
+      selectedDay: "",
+      timestamp: product.timestamp, // Include timestamp
+    }));
     setProductState(productTitles);
   }, [cart.products]);
-  console.log(productState);
+
+  const handleDayChange = (index, day) => {
+    const newProductState = [...productState];
+    newProductState[index].selectedDay = day;
+    setProductState(newProductState);
+  };
+
+  const validateDays = () => {
+    const selectedDays = productState.map((product) => product.selectedDay);
+    const uniqueDays = new Set(selectedDays);
+    return uniqueDays.size === 5 && selectedDays.every((day) => daysOfWeek.includes(day));
+  };
+
+  const isWeekday = () => {
+    const today = new Date();
+    const day = today.getDay();
+    return day !== 0 && day !== 6; // Check if today is not Saturday (6) or Sunday (0)
+  };
+
   const createOrder = async () => {
     try {
-      if (session) {
-        if (confirm("Are you sure you want to create this order?")) {
-          const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/orders`,
-            newOrder
-          );
+      if (!isWeekday()) {
+        toast.error("Orders can only be placed on weekdays.");
+        return;
+      }
 
-          if (res.status === 201) {
-            router.push(`/order/${res.data._id}`);
+      if (!validateDays()) {
+        toast.error("Please select a unique day for each product from Monday to Friday.");
+        return;
+      }
+
+      if (sessionStorage.getItem("user")) {
+        if (confirm("Are you sure you want to create this order?")) {
+          const orders = productState.map((item) => ({
+            ...item,
+            customer: JSON.parse(sessionStorage.getItem("user")).user.uid.substring(0, 5),
+          }));
+          await new FireStore("orders").addDocuments(orders).then(() => {
+            router.push(`/menu`);
             dispatch(reset());
             toast.success("Order created successfully");
-          }
+          });
         }
       } else {
         router.push("/auth/login");
@@ -76,6 +91,12 @@ const Cart = ({ userList }) => {
     }
   };
 
+  const handleDelete = (index) => {
+    dispatch(removeProduct(index)); // Dispatch the removeProduct action
+    const newProductState = [...productState];
+    newProductState.splice(index, 1);
+    setProductState(newProductState);
+  };
   return (
     <div className="min-h-[calc(100vh_-_433px)]">
       <div className="flex justify-between items-center md:flex-row flex-col">
@@ -94,19 +115,41 @@ const Cart = ({ userList }) => {
                     <th scope="col" className="py-3 px-6">
                       DAY
                     </th>
+                    <th scope="col" className="py-3 px-6">
+                      ACTION
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {cart.products.map((product) => (
+                  {cart.products.map((product, index) => (
                     <tr
                       className="transition-all bg-secondary border-gray-700 hover:bg-primary"
                       key={product._id}
                     >
-                      <td className="py-4 px-0 font-medium whitespace-nowrap hover:text-white ">
-                        <span className="text-purple-600">{product.title}</span>
+                      <td className="py-4 px-0 font-medium whitespace-nowrap text-white hover:text-white ">
+                        <span className="text-white">{product.title}</span>
                       </td>
                       <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
-                        {/* TODO; DATE PICKER*/}
+                        <select
+                          className="bg-gray-800 text-white border border-gray-600 rounded-md p-2"
+                          value={productState[index]?.selectedDay}
+                          onChange={(e) => handleDayChange(index, e.target.value)}
+                        >
+                          <option value="">Select a day</option>
+                          {daysOfWeek.map((day) => (
+                            <option key={day} value={day}>
+                              {day}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                        <button
+                          className="bg-red-600 text-white rounded-md px-4 py-2"
+                          onClick={() => handleDelete(index)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -127,17 +170,12 @@ const Cart = ({ userList }) => {
         </div>
         <div className="bg-secondary min-h-[calc(100vh_-_433px)] md:h-screen flex flex-col justify-center text-white p-12 lg:w-auto md:w-[250px] w-full   md:text-start !text-center">
           <Title addClass="text-[40px]">CART TOTAL</Title>
-
-          <div className="mt-6">
-            <b>All Items selected; </b> <br />
-          </div>
-
           <div>
             <button
               className="btn-primary mt-4 md:w-auto w-52"
               onClick={createOrder}
             >
-             Confirm Order
+              Confirm Order
             </button>
           </div>
         </div>
@@ -146,7 +184,4 @@ const Cart = ({ userList }) => {
   );
 };
 
-
 export default Cart;
-
-

@@ -9,6 +9,8 @@ import {
   deleteDoc,
   writeBatch,
   setDoc,
+  where,
+  query,
 } from "firebase/firestore";
 
 class FireStore {
@@ -97,6 +99,35 @@ class FireStore {
       batch.delete(docRef);
     });
     await batch.commit();
+  }
+
+  async conditionalGet(
+    conditions,
+  ) {
+    try {
+      const colRef = collection(fireStore, this.collectionName);
+
+      const queryConstraints = conditions.map((condition) =>
+        where(condition.field, condition.operator, condition.value),
+      );
+
+      const q = query(colRef, ...queryConstraints);
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const results = [];
+        querySnapshot.forEach((doc) => {
+          results.push({...doc.data(), id:doc.id});
+        });
+        return results;
+      } else {
+        console.log("No matching documents!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error getting documents:", error);
+      throw error;
+    }
   }
 }
 
