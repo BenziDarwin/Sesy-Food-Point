@@ -19,7 +19,7 @@ const Profile = () => {
     } else {
       push("/auth/login");
     }
-  },[push, user])
+  },[ user])
 
   const [tabs, setTabs] = useState(0);
   const { push } = useRouter();
