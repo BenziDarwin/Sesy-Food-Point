@@ -14,8 +14,8 @@ const Order = () => {
   const getCurrentWeekOrders = async () => {
     try {
       const curr = new Date(); // get current date
-      const first = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week + 1 (Monday)
-      const last = first + 4; // Last day is the first day + 4 (Friday)
+      const first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week + 1 (Monday)
+      const last = first + 6; // Last day is the first day + 4 (Friday)
 
       const firstday = new Date(curr.setDate(first));
       firstday.setHours(0, 0, 0, 0); // Set time to the start of the day

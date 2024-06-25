@@ -1,18 +1,15 @@
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import Title from "../../components/ui/Title";
-import { useSelector, useDispatch } from "react-redux";
+import FireStore from "../../firebase/firestore";
 import {
   quantityDecrease,
   quantityIncrease,
-  reset,
   removeProduct,
+  reset,
 } from "../../redux/cartSlice";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import FireStore from "../../firebase/firestore";
-import { Timestamp } from "firebase/firestore";
 
 const Cart = ({ userList }) => {
   const cart = useSelector((state) => state.cart);
@@ -26,7 +23,7 @@ const Cart = ({ userList }) => {
     const productTitles = cart.products.map((product) => ({
       title: product.title,
       selectedDay: "",
-      timestamp: product.timestamp, // Include timestamp
+      timestamp: product.timestamp,
     }));
     setProductState(productTitles);
   }, [cart.products]);
@@ -46,21 +43,21 @@ const Cart = ({ userList }) => {
   const isWeekday = () => {
     const today = new Date();
     const day = today.getDay();
-    return day !== 0 && day !== 6; // Check if today is not Saturday (6) or Sunday (0)
+    return day !== 0 && day !== 6;
   };
 
  
   const getCurrentWeekOrders = async (uid) => {
     try {
-      const curr = new Date(); // get current date
-      const first = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week + 1 (Monday)
-      const last = first + 4; // Last day is the first day + 4 (Friday)
+      const curr = new Date();
+      const first = curr.getDate() - curr.getDay(); 
+      const last = first + 6;
 
       const firstday = new Date(curr.setDate(first));
-      firstday.setHours(0, 0, 0, 0); // Set time to the start of the day
+      firstday.setHours(0, 0, 0, 0);
 
       const lastday = new Date(curr.setDate(last));
-      lastday.setHours(23, 59, 59, 999); // Set time to the end of the day
+      lastday.setHours(23, 59, 59, 999);
 
       const orders = await new FireStore("orders").conditionalGet([
         { field: "customer", operator: "==", value: uid },
@@ -110,7 +107,7 @@ const Cart = ({ userList }) => {
       const orders = productState.map((item) => ({
         ...item,
         customer: uid,
-        timestamp: new Date(), // Add current timestamp
+        timestamp: new Date(),
       }));
 
       await new FireStore("orders").addDocuments(orders);
@@ -133,7 +130,7 @@ const Cart = ({ userList }) => {
   };
 
   const handleDelete = (index) => {
-    dispatch(removeProduct(index)); // Dispatch the removeProduct action
+    dispatch(removeProduct(index));
     const newProductState = [...productState];
     newProductState.splice(index, 1);
     setProductState(newProductState);
