@@ -27,6 +27,10 @@ const Login = () => {
           position: "bottom-left",
           theme: "colored",
         });
+      } else {
+        toast.error("Incorrect email or password!", {
+          position: "bottom-left",
+        });
       }
     } catch (err) {
       console.log(err);
