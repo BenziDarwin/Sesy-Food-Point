@@ -5,6 +5,8 @@ import Title from "../ui/Title";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [selectedDay, setSelectedDay] = useState("");
   const router = useRouter();
@@ -41,6 +43,8 @@ const Order = () => {
     try {
       const odrs = await getCurrentWeekOrders();
       if (odrs.length > 0) {
+        let cats = [...new Set(odrs.map(odr => odr.category))];
+        setCategories(cats);
         setOrders(odrs);
         setFilteredOrders(odrs);
       }
@@ -61,9 +65,21 @@ const Order = () => {
   const handleDayFilterChange = (day) => {
     setSelectedDay(day);
     if (day) {
-      const filtered = orders.filter(order => order.selectedDay === day);
+      const filtered = orders.filter(order => order.selectedDay === day && order.category === selectedCategory);
       setFilteredOrders(filtered);
     } else {
+      handleCategoryFilterChange(selectedCategory)
+      setFilteredOrders(orders);
+    }
+  };
+
+  const handleCategoryFilterChange = (cat) => {
+    setSelectedCategory(cat);
+    if (cat) {
+      const filtered = orders.filter(order => order.category === cat && order.selectedDay === selectedDay);
+      setFilteredOrders(filtered);
+    } else {
+      handleDayFilterChange(selectedDay)
       setFilteredOrders(orders);
     }
   };
@@ -72,7 +88,6 @@ const Order = () => {
     <div className="lg:p-8 flex-1 lg:mt-0 mt-5 lg:max-w-[70%] xl:max-w-none flex flex-col justify-center">
       <Title addClass="text-[40px]">Products</Title>
       <div className="mt-5 flex justify-between items-center">
-        <label className="text-gray-500 text-sm mr-2">Filter by Day:</label>
         <select
           className="bg-gray-800 text-white border border-gray-600 rounded-md p-2"
           value={selectedDay}
@@ -85,6 +100,18 @@ const Order = () => {
             </option>
           ))}
         </select>
+        <select
+          className="bg-gray-800 text-white border border-gray-600 rounded-md p-2"
+          value={selectedCategory}
+          onChange={(e) => handleCategoryFilterChange(e.target.value)}
+        >
+          <option value="">All</option>
+          {categories.length > 0 && categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="overflow-x-auto w-full mt-5">
         <table className="md:w-[60vw] w-full text-sm text-center text-gray-500">
@@ -92,6 +119,9 @@ const Order = () => {
             <tr>
               <th scope="col" className="py-3 px-6">
                 Customer
+              </th>
+              <th scope="col" className="py-3 px-6">
+                Category
               </th>
               <th scope="col" className="py-3 px-6">
                 Product
@@ -110,6 +140,9 @@ const Order = () => {
                 >
                   <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white gap-x-1">
                     {order.customer}
+                  </td>
+                  <td className="py-4 px-6 font-medium hover:text-white flex-wrap w-[100px] whitespace-nowrap">
+                    {order.category}
                   </td>
                   <td className="py-4 px-6 font-medium hover:text-white flex-wrap w-[100px] whitespace-nowrap">
                     {order.title}

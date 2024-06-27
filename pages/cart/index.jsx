@@ -21,6 +21,7 @@ const Cart = ({ userList }) => {
 
   useEffect(() => {
     const productTitles = cart.products.map((product) => ({
+      category: product.category,
       title: product.title,
       selectedDay: "",
       timestamp: product.timestamp,
@@ -35,7 +36,8 @@ const Cart = ({ userList }) => {
   };
 
   const validateDays = () => {
-    const selectedDays = productState.map((product) => product.selectedDay);
+    let lunchDays = productState.filter(product => product.category === "Big Lunch");
+    const selectedDays = lunchDays.map((product) => product.selectedDay);
     const uniqueDays = new Set(selectedDays);
     return uniqueDays.size === selectedDays.length && selectedDays.every((day) => daysOfWeek.includes(day));
   };
@@ -61,6 +63,7 @@ const Cart = ({ userList }) => {
 
       const orders = await new FireStore("orders").conditionalGet([
         { field: "customer", operator: "==", value: uid },
+        {field: "category", operator:"==", value:"Big Lunch"}
       ]);
 
       const currentOrders = orders.filter(order => {

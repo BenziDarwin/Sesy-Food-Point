@@ -77,6 +77,9 @@ const Order = () => {
                 ORDER
               </th>
               <th scope="col" className="py-3 px-6">
+                CATEGORY
+              </th>
+              <th scope="col" className="py-3 px-6">
                 DATE
               </th>
             </tr>
@@ -95,6 +98,9 @@ const Order = () => {
                 </td>
                 <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
                   {order.title}
+                </td>
+                <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                  {order.category}
                 </td>
                 <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
                 {order.selectedDay}
