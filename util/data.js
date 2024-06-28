@@ -16,23 +16,23 @@ export const categoryList = [
       _id:1,
       category:"Breakfast",
       img: "",
-      title:"Chapati",
-      desc:"Large chapati"
+      title:"Buns",
+      desc:""
 
     },
     {
         _id:2,
         category:"Breakfast",
         img: "",
-        title:"Cassava",
-        desc:"Boiled Cassava"
+        title:"Mandazi",
+        desc:""
     },
     {
         _id:3,
         category:"Breakfast",
         img: "",
-        title:"Vegetable Samosa",
-        desc:"Deep Fried Vegetable Samosa"
+        title:"Chapati",
+        desc:""
     },
     {
         _id:4,
@@ -204,5 +204,97 @@ export const categoryList = [
         title:"Watermelon Juice",
         desc:""
   
-      }
+      },
+      {
+        _id:27,
+        category:"Breakfast",
+        img: "",
+        title:"Beef Samosas",
+        desc:""
+    },
+    ,
+      {
+        _id:28,
+        category:"Breakfast",
+        img: "",
+        title:"Peas Samosas",
+        desc:""
+    },,
+    {
+      _id:29,
+      category:"Breakfast",
+      img: "",
+      title:"Boiled Cassava",
+      desc:""
+  },
+  {
+    _id:30,
+    category:"Breakfast",
+    img: "",
+    title:"Fried Cassava",
+    desc:""
+},
+{
+  _id:31,
+  category:"Breakfast",
+  img: "",
+  title:"Bread (Plain)",
+  desc:""
+},
+{
+  _id:32,
+  category:"Breakfast",
+  img: "",
+  title:"Bread (toasted) plain/with butter/with omlete",
+  desc:""
+},
+{
+  _id:33,
+  category:"Breakfast",
+  img: "",
+  title:"French toast",
+  desc:""
+},
+{
+  _id:34,
+  category:"Breakfast",
+  img: "",
+  title:"Katogo",
+  desc:""
+},
+{
+  _id:35,
+  category:"Breakfast",
+  img: "",
+  title:"Rolex",
+  desc:""
+},
+{
+  _id:36,
+  category:"Breakfast",
+  img: "",
+  title:"Sausages",
+  desc:""
+},
+{
+  _id:37,
+  category:"Breakfast",
+  img: "",
+  title:"Milk",
+  desc:""
+},
+{
+  _id:38,
+  category:"Breakfast",
+  img: "",
+  title:"Porridge",
+  desc:""
+},
+{
+  _id:39,
+  category:"Breakfast",
+  img: "",
+  title:"Spiced tea",
+  desc:""
+},
   ]
