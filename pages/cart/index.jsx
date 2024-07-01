@@ -80,11 +80,6 @@ const Cart = ({ userList }) => {
 
   const createOrder = async () => {
     try {
-      // if (!isWeekday()) {
-      //   toast.error("Orders can only be placed on weekdays.");
-      //   return;
-      // }
-
       if (!validateDays()) {
         toast.error("Please select a unique day for each product.");
         return;

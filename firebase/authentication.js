@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth';
 import { auth } from "./config";
 import FireStore from './firestore';
+import { toast } from 'react-toastify';
 
 class Authentication {
   
@@ -18,7 +19,7 @@ class Authentication {
         await new FireStore("users").createUser({email, fullName, role:"user"});
         return userCredential.user;
       } catch (error) {
-        alert("An error occured!");
+        toast.error(error?.message);
         console.error("Error registering new user:", error);
         return null;
       }
