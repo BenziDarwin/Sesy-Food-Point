@@ -208,91 +208,99 @@ export const categoryList = [
         _id:27,
         category:"Breakfast",
         img: "",
-        title:"Beef Samosas",
+        title:"Beef Samosas (1000/=)",
         desc:""
     },
       {
         _id:28,
         category:"Breakfast",
         img: "",
-        title:"Peas Samosas",
+        title:"Peas Samosas (500/=)",
         desc:""
     },
     {
       _id:29,
       category:"Breakfast",
       img: "",
-      title:"Boiled Cassava",
+      title:"Boiled Cassava (500/=)",
       desc:""
   },
   {
     _id:30,
     category:"Breakfast",
     img: "",
-    title:"Fried Cassava",
+    title:"Fried Cassava(500/=)",
     desc:""
 },
 {
   _id:31,
   category:"Breakfast",
   img: "",
-  title:"Bread (Plain)",
+  title:"Bread (Plain) 2 slices or toasted (500/=)",
   desc:""
 },
 {
   _id:32,
   category:"Breakfast",
   img: "",
-  title:"Bread (toasted) plain/with butter/with omlete",
+  title:"Bread (toasted) plain/with butter/with omlete (3500/=)",
   desc:""
 },
 {
   _id:33,
   category:"Breakfast",
   img: "",
-  title:"French toast",
+  title:"French toast (2000/=)",
   desc:""
 },
 {
   _id:34,
   category:"Breakfast",
   img: "",
-  title:"Katogo",
+  title:"Rolex (3500/=)",
   desc:""
 },
 {
   _id:35,
   category:"Breakfast",
   img: "",
-  title:"Rolex",
+  title:"Sausages (1000/=)",
   desc:""
 },
 {
   _id:36,
   category:"Breakfast",
   img: "",
-  title:"Sausages",
+  title:"Milk (1000/=)",
   desc:""
 },
 {
   _id:37,
   category:"Breakfast",
   img: "",
-  title:"Milk",
+  title:"Katogo (beef) (5000/=)",
   desc:""
 },
 {
   _id:38,
   category:"Breakfast",
   img: "",
-  title:"Porridge",
+  title:"Katogo (beans) (5000/=)",
   desc:""
 },
 {
   _id:39,
   category:"Breakfast",
   img: "",
-  title:"Spiced tea",
+  title:"Katogo (peas) (5000/=)",
   desc:""
-}
+},
+{
+  _id:39,
+  category:"Breakfast",
+  img: "",
+  title:"Katogo (offals) (5000/=)",
+  desc:""
+},
+
   ]
