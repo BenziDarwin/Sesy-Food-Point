@@ -16,7 +16,7 @@ export const categoryList = [
       _id:1,
       category:"Breakfast",
       img: "",
-      title:"Buns",
+      title:"Buns (500/=)",
       desc:""
 
     },
@@ -24,14 +24,14 @@ export const categoryList = [
         _id:2,
         category:"Breakfast",
         img: "",
-        title:"Mandazi",
+        title:"Mandazi (500/=)",
         desc:""
     },
     {
         _id:3,
         category:"Breakfast",
         img: "",
-        title:"Chapati",
+        title:"Chapati(1000/=)",
         desc:""
     },
     {
@@ -296,11 +296,25 @@ export const categoryList = [
   desc:""
 },
 {
-  _id:39,
+  _id:40,
   category:"Breakfast",
   img: "",
   title:"Katogo (offals) (5000/=)",
   desc:""
 },
+{
+  _id:41,
+  category:"Breakfast",
+  img: "",
+  title:"Boiled eggs(500/=)",
+  desc:""
+},
+{
+  _id:42,
+  category:"Breakfast",
+  img: "",
+  title:"Pancakes (500/=)",
+  desc:""
+}
 
   ]
