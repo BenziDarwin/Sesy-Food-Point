@@ -7,6 +7,7 @@ const Order = () => {
   const [orders, setOrders] = useState([]);
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState();
+  const [loading, setLoading] = useState(false);
 
 
   const getCurrentWeekOrders = async (uid) => {
@@ -54,10 +55,17 @@ const Order = () => {
     if (user) {
       setCurrentUser(user)
       fetchOrders(user.user.uid.substring(0, 5));
+   
     } else {
       router.push("/auth/login");
     }
-  }, [router]);
+  }, [router, loading]);
+
+  const handleDelete = async (id) => {
+    setLoading(true);
+    await new FireStore("orders").deleteDocument(id);
+    setLoading(false)
+  }
 
 
   return (
@@ -82,6 +90,9 @@ const Order = () => {
               <th scope="col" className="py-3 px-6">
                 DATE
               </th>
+              <th scope="col" className="py-3 px-6">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -105,6 +116,14 @@ const Order = () => {
                 <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
                 {order.selectedDay}
                 </td>
+                <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
+                        <button
+                          className="bg-red-600 text-white rounded-md px-4 py-2"
+                          onClick={() => handleDelete(order.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
               </tr>
             ))}
           </tbody>
