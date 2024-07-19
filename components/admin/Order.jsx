@@ -65,7 +65,10 @@ const Order = () => {
   const handleDayFilterChange = (day) => {
     setSelectedDay(day);
     if (day) {
-      const filtered = orders.filter(order => order.selectedDay === day && order.category === selectedCategory);
+      const filtered = orders.filter(order => order.selectedDay === day);
+      if(selectedCategory !== "") {
+        filtered = filtered.filter(f => f.category === selectedCategory)
+      }
       setFilteredOrders(filtered);
     } else {
       handleCategoryFilterChange(selectedCategory)
@@ -76,7 +79,10 @@ const Order = () => {
   const handleCategoryFilterChange = (cat) => {
     setSelectedCategory(cat);
     if (cat) {
-      const filtered = orders.filter(order => order.category === cat && order.selectedDay === selectedDay);
+      const filtered = orders.filter(order => order.category === cat);
+      if(selectedDay !== "") {
+        filtered = filtered.filter(f => f.selectedDay === selectedDay)
+      }
       setFilteredOrders(filtered);
     } else {
       handleDayFilterChange(selectedDay)
@@ -85,7 +91,7 @@ const Order = () => {
   };
 
   return (
-    <div className="lg:p-8 flex-1 lg:mt-0 mt-5 lg:max-w-[70%] xl:max-w-none flex flex-col justify-center">
+    <div className="lg:p-8 flex-1 lg:mt-0 mt-5 lg:max-w-[60%] xl:max-w-none flex flex-col justify-center">
       <Title addClass="text-[40px]">Products</Title>
       <div className="mt-5 flex justify-between items-center">
         <select
@@ -129,6 +135,9 @@ const Order = () => {
               <th scope="col" className="py-3 px-6">
                 Day
               </th>
+              <th scope="col" className="py-3 px-6">
+                Notes
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -149,6 +158,9 @@ const Order = () => {
                   </td>
                   <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white gap-x-1">
                     {order.selectedDay}
+                  </td>
+                  <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white gap-x-1">
+                    {order.notes}
                   </td>
                 </tr>
               ))}

@@ -16,6 +16,7 @@ const Cart = ({ userList }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [productState, setProductState] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -24,6 +25,7 @@ const Cart = ({ userList }) => {
       category: product.category,
       title: product.title,
       selectedDay: "",
+      notes: "",
       timestamp: product.timestamp,
     }));
     setProductState(productTitles);
@@ -35,12 +37,29 @@ const Cart = ({ userList }) => {
     setProductState(newProductState);
   };
 
+  const handleNotesChange = (index, notes) => {
+    const newProductState = [...productState];
+    newProductState[index].notes = notes;
+    setProductState(newProductState);
+  };
+
   const validateDays = () => {
+    let state = true;
+    for (const prod of productState) {
+        if (prod.selectedDay === "") {
+            state = false;
+            break;
+        }
+    }
+    return state;
+};
+
+  const validateUnique = () => {
     let lunchDays = productState.filter(product => product.category === "Big Lunch");
     const selectedDays = lunchDays.map((product) => product.selectedDay);
     const uniqueDays = new Set(selectedDays);
     return uniqueDays.size === selectedDays.length && selectedDays.every((day) => daysOfWeek.includes(day));
-  };
+  }
 
   const isWeekday = () => {
     const today = new Date();
@@ -79,15 +98,24 @@ const Cart = ({ userList }) => {
   };
 
   const createOrder = async () => {
+    setLoading(true)
     try {
-      if (!validateDays()) {
+      if (validateDays() === false) {
         toast.error("Please select a unique day for each product.");
+        setLoading(false)
+        return;
+      }
+
+      if(validateUnique() === false) {
+        toast.error("Please select a unique day for each product.");
+        setLoading(false)
         return;
       }
 
       const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : null;
       if (!user) {
         router.push("/auth/login");
+        setLoading(false)
         throw new Error("You must be logged in to create an order");
       }
 
@@ -95,9 +123,9 @@ const Cart = ({ userList }) => {
       const currentWeekOrders = await getCurrentWeekOrders(uid);
       if (currentWeekOrders.length > 0) {
         if (!confirm("You already have orders for this week. Creating new orders will override the old ones. Do you want to proceed?")) {
+          setLoading(false)
           return;
         }
-
         const orderIds = currentWeekOrders.map(order => order.id);
         await new FireStore("orders").deleteDocuments(orderIds);
       }
@@ -112,18 +140,10 @@ const Cart = ({ userList }) => {
       router.push(`/menu`);
       dispatch(reset());
       toast.success("Order created successfully");
+      setLoading(false)
     } catch (error) {
       toast.error(error.message);
       console.error(error);
-    }
-  };
-
-  const quantityChange = (type, price) => {
-    if (type === 0) {
-      dispatch(quantityDecrease(price));
-    }
-    if (type === 1) {
-      dispatch(quantityIncrease(price));
     }
   };
 
@@ -153,6 +173,9 @@ const Cart = ({ userList }) => {
                       DAY
                     </th>
                     <th scope="col" className="py-3 px-6">
+                      NOTES
+                    </th>
+                    <th scope="col" className="py-3 px-6">
                       ACTION
                     </th>
                   </tr>
@@ -165,6 +188,9 @@ const Cart = ({ userList }) => {
                     >
                       <td className="py-4 px-0 font-medium whitespace-nowrap text-white hover:text-white ">
                         <span className="text-white">{product.title}</span>
+                      </td>
+                      <td className="py-4 px-0 font-medium whitespace-nowrap text-white hover:text-white ">
+                       <input type="text" placeholder="Add some notes..." onChange={(e) => handleNotesChange(index, e.target.value)} className="bg-gray-800 text-white border border-gray-600 rounded-md p-2"/>
                       </td>
                       <td className="py-4 px-6 font-medium whitespace-nowrap hover:text-white">
                         <select
@@ -210,6 +236,7 @@ const Cart = ({ userList }) => {
           <div>
             <button
               className="btn-primary mt-4 md:w-auto w-52"
+              disabled={loading}
               onClick={createOrder}
             >
               Confirm Order
